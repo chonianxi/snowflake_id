@@ -1,0 +1,7 @@
+*.project
+*.classpath
+/target
+/.settings
+/.idea
+/*.bak
+/*/*.bak

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{16}-[%L] - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="rollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>/data/logs/idcenter/idcenter.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>/data/logs/idcenter/idcenter.%d{yyyyMMdd}.%i.log</FileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>10MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{16}-[%L] - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<root level="INFO">
+		<appender-ref ref="rollingFile"/>
+		<appender-ref ref="console"/>
+	</root>
+
+	<logger name="org.apache.kafka" level="ERROR">
+		<appender-ref ref="rollingFile"/>
+	</logger>
+
+	<logger name="org.apache.zookeeper" level="ERROR">
+		<appender-ref ref="rollingFile"/>
+	</logger>
+
+	<logger name="com.chau.ching.io" level="DEBUG">
+		<appender-ref ref="rollingFile"/>
+	</logger>
+
+</configuration>
