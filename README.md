@@ -18,8 +18,14 @@ mvn install 打包编译到本地
 启动顺序
 1、安装zookeeper并启动服务
 2、java -jar -Xmx4096m -Xms4096m -Xmn2g  id-center-1.0.0.jar 127.0.0.1:2181 1 1
+
+
 id-center-1.0.0.jar是刚打的jar包,127.0.0.1:2181是刚安装的zookeeper的ip和连接端口 第一个1为数据中心ID(取值范围为0-31)，第二个1为生成ID的服务器编码（取值范围为0-15）
+
+
 多网卡的情况下，需要绑定IP，启动可以指定IP，例如
+
+
 java -jar -Xmx4096m -Xms4096m -Xmn2g  id-center-1.0.0.jar 127.0.0.1:2181 192.168.1.133 1 1
 
 
