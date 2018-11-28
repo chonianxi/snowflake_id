@@ -1,6 +1,5 @@
 package com.chau.ching.io.idcenter;
 
-import org.springframework.beans.factory.annotation.Value;
 
 import java.io.RandomAccessFile;
 import java.util.Map;

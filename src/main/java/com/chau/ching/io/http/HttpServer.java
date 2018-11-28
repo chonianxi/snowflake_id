@@ -23,10 +23,6 @@ public class HttpServer {
 
     private Logger logger = LoggerFactory.getLogger(HttpServer.class);
 
-    /*@Value("${host}")
-    private String host;
-    @Value("${port}")
-    private String port1;*/
 
     public void bind(String host,int port) throws InterruptedException {
         //Integer port = Integer.valueOf(port1);
@@ -63,7 +59,6 @@ public class HttpServer {
         try {
             ServerBootstrap bootstrap = new ServerBootstrap();
             bootstrap.group(boss,work)
-                    //.channel(EpollServerSocketChannel.class)
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
@@ -73,12 +68,10 @@ public class HttpServer {
                             pipe.addLast("HttpServerProcess",new HttpServerProcess());
                         }
                     })
-                    //.option(ChannelOption.SO_KEEPALIVE, true)
                     .option(ChannelOption.SO_SNDBUF,2048)
                     .option(ChannelOption.SO_RCVBUF,2048)
                     .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 1000);
 
-            //bootstrap.localAddress(Integer.valueOf(args[0]));
             if (os.toLowerCase().indexOf(Constant.OS_WINDOWS)>-1){
                 bootstrap.channel(NioServerSocketChannel.class);
             }else{

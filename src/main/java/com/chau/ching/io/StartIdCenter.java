@@ -2,40 +2,18 @@ package com.chau.ching.io;
 
 import com.chau.ching.io.constant.Constant;
 import com.chau.ching.io.http.HttpServer;
-import com.chau.ching.io.http.HttpServerProcess;
 import com.chau.ching.io.idcenter.CustomSerializer;
 import com.chau.ching.io.idcenter.Id;
 import com.chau.ching.io.idcenter.IdCenter;
-import com.chau.ching.io.mqtt.MqttProcess;
-import com.chau.ching.io.mqtt.MqttServer;
-import com.chau.ching.io.pojo.MachineWork;
 import com.chau.ching.io.util.TaskToZk;
 import com.chau.ching.io.zookeeper.ZookeeperValidate;
-import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.*;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.http.HttpRequestDecoder;
-import io.netty.handler.codec.http.HttpRequestEncoder;
-import io.netty.handler.codec.http.HttpResponseEncoder;
-import io.netty.handler.codec.mqtt.MqttDecoder;
-import io.netty.handler.codec.mqtt.MqttEncoder;
-import io.netty.util.concurrent.DefaultThreadFactory;
 import org.I0Itec.zkclient.ZkClient;
 import org.I0Itec.zkclient.ZkConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.RandomAccessFile;
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class StartIdCenter {
 

@@ -156,10 +156,6 @@ public class MqttProtocolServer {
             logger.info("---clientId--connent-{}",clientId);
             MqttHelper.saveSession(clientId, ctx);
 
-        /*if (null==RedisUtil.getKeyValue("cbhent"+clientId)) {
-        	RedisUtil.setKey("cbhent"+clientId, ctx);
-        }*/
-            //MqttHelper.saveSession(this.clientId, ctx);
         }
 
 
@@ -299,11 +295,6 @@ public class MqttProtocolServer {
 
 
             //记录断开连接
-		/*Map mapMsg = new ConcurrentHashMap();
-		mapMsg.put("clientid", clientId);
-		mapMsg.put("msgtype", 6);
-		mapMsg.put("msgtime", System.currentTimeMillis());
-		getTemplate().send(MqttHelper.deviceHeart, SerializationUtils.serialize(mapMsg));*/
         }
 
 
@@ -376,14 +367,6 @@ public class MqttProtocolServer {
                 );
 
 
-			/*MqttHelper.sendMessage(
-	                ctx,
-	                MqttMessageFactory.newMessage(
-	                        new MqttFixedHeader(MqttMessageType.PUBLISH, false, MqttQoS.EXACTLY_ONCE, false, 0),
-	                        new MqttPublishVariableHeader("test",packid+1),
-	                        msg.payload()
-	                ),this.clientId,null,true
-	        );*/
             }else {
                 MqttHelper.sendMessage(
                         ctx,

@@ -145,10 +145,4 @@ public class MqttProcess extends SimpleChannelInboundHandler {
 
     }
 
-	/*@Override
-	public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-	    //心跳失败，关闭
-		logger.info("-----心跳失败-----");
-		ctx.close().sync();
-	}*/
 }

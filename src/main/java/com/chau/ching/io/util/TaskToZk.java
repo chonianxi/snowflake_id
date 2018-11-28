@@ -20,19 +20,14 @@ public class TaskToZk {
     public void go(String ip, String datacenterId, String workId, ZkClient zkc,String zkServers){
         Runnable runnable = new Runnable() {
             public void run() {
-                // task to run goes here
                 String timeNode = Constant.ZK_TIME_LIST+"/"+datacenterId+"/"+workId;
                 String id = String.valueOf(Id.getSession(Constant.ID_SESSION).nextId());
-                //System.out.println("Hello !!");
                 try{
                     zkc.writeData(timeNode,id);
                 }catch(Exception e){
                     e.printStackTrace();
-                    //ZkClient zkc = new ZkClient(new ZkConnection(zkServers), 20000 ,new CustomSerializer());
 
                 }
-
-                //System.out.println("Hello !!"+ip+"/"+datacenterId+"/"+workId+"/"+zkc.exists(Constant.ZK_TIME_LIST)+"/"+System.currentTimeMillis());
             }
         };
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();

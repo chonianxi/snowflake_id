@@ -2,11 +2,8 @@ package com.chau.ching.io.zookeeper;
 
 import com.chau.ching.io.constant.Constant;
 import com.chau.ching.io.idcenter.Id;
-import com.chau.ching.io.pojo.MachineWork;
-import com.chau.ching.io.util.JsonUtils;
 import org.I0Itec.zkclient.ZkClient;
 import org.apache.commons.lang.StringUtils;
-import org.apache.zookeeper.CreateMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,15 +41,10 @@ public class ZookeeperValidate {
             //增加自身节点
             zkc.createPersistent(hostSelfNode,true);
             zkc.writeData(hostSelfNode, ip);
-            //zkc.createPersistent(Constant.ZK_TIME_LIST+"/"+ip,true);
             //初始化自身节点的服务最近提供时间
             zkc.createPersistent(timeNode,true);
             zkc.writeData(timeNode,id);
-            //zkc.writeData(Constant.ZK_TIME_LIST+"/"+ip,System.currentTimeMillis());
 
-            //当前的活跃机器数
-            //zkc.createPersistent(Constant.ZK_IDCENTER_ID_MAX,true);
-            //zkc.writeData(Constant.ZK_IDCENTER_ID_MAX,1+"");
         }else{
             //得到当前数据中心下面所有的workId列表
             List<String> list = zkc.getChildren(hostNode);
