@@ -69,6 +69,26 @@ public class IdCenter {
         long timestamp = timeGen();
 
         if (timestamp < lastTimestamp) {
+
+            long offset = lastTimestamp - timestamp;
+            if (offset <= 5) {
+                try {
+                    //时间偏差大小小于5ms，则等待两倍时间
+                    wait(offset << 1);//wait
+                    timestamp = timeGen();
+                    if (timestamp < lastTimestamp) {
+                        //还是小于，抛异常并上报
+                        throw ClockBackwardsEx(timestamp);
+                    }
+                } catch (InterruptedException e) {
+                    throw  e;
+                }
+            } else {
+                //throw
+                throw ClockBackwardsEx(timestamp);
+            }
+
+
             System.err.printf("clock is moving backwards.  Rejecting requests until %d.", lastTimestamp);
             throw new RuntimeException(String.format("Clock moved backwards.  Refusing to generate id for %d milliseconds",
                     lastTimestamp - timestamp));
