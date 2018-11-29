@@ -1,22 +1,14 @@
 package com.chau.ching.io.idcenter;
 
-import com.chau.ching.io.constant.Constant;
-import com.chau.ching.io.pojo.MachineWork;
-import org.I0Itec.zkclient.ZkClient;
-import org.I0Itec.zkclient.ZkConnection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.RandomAccessFile;
-import java.net.InetAddress;
-import java.nio.BufferOverflowException;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /** Copyright 2010-2012 Twitter, Inc.*/
 
 public class IdCenter {
+
+    private Logger logger = LoggerFactory.getLogger(IdCenter.class);
 
     private long workerId;
     private long datacenterId;
@@ -30,7 +22,7 @@ public class IdCenter {
         if (datacenterId > maxDatacenterId || datacenterId < 0) {
             throw new IllegalArgumentException(String.format("datacenter Id can't be greater than %d or less than 0",maxDatacenterId));
         }
-        System.out.printf("worker starting. timestamp left shift %d, datacenter id bits %d, worker id bits %d, sequence bits %d, workerid %d",
+        logger.info("worker starting. timestamp left shift %d, datacenter id bits %d, worker id bits %d, sequence bits %d, workerid %d",
                 timestampLeftShift, datacenterIdBits, workerIdBits, sequenceBits, workerId);
 
         this.workerId = workerId;
@@ -78,18 +70,18 @@ public class IdCenter {
                     timestamp = timeGen();
                     if (timestamp < lastTimestamp) {
                         //还是小于，抛异常并上报
-                        throw ClockBackwardsEx(timestamp);
+                        throw new RuntimeException("时间不对了"+timestamp);
                     }
                 } catch (InterruptedException e) {
-                    throw  e;
+
                 }
             } else {
                 //throw
-                throw ClockBackwardsEx(timestamp);
+                throw new RuntimeException("时间不对了"+timestamp);
             }
 
 
-            System.err.printf("clock is moving backwards.  Rejecting requests until %d.", lastTimestamp);
+            logger.info("clock is moving backwards.  Rejecting requests until %d.", lastTimestamp);
             throw new RuntimeException(String.format("Clock moved backwards.  Refusing to generate id for %d milliseconds",
                     lastTimestamp - timestamp));
         }
