@@ -29,5 +29,8 @@ public class Constant {
     public static final String HTTP_TEXT = "text/plain";
 
 
+    public static final String LOG_FILE_PATH = "log_slave/";
+
+
 
 }

@@ -43,7 +43,7 @@ public class HttpServerProcess extends ChannelInboundHandlerAdapter {
                         out.put((byte) '\r');
                         out.put((byte) '\n');
                     }catch(BufferOverflowException e){
-                        memoryMappedFile = new RandomAccessFile(System.currentTimeMillis()+"", "rw");
+                        memoryMappedFile = new RandomAccessFile(Constant.LOG_FILE_PATH + System.currentTimeMillis()+"", "rw");
                         out = memoryMappedFile.getChannel().map(FileChannel.MapMode.READ_WRITE, 0, Constant.count);
                         out.put(id.getBytes());
                         out.put((byte) '\r');

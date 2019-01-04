@@ -55,7 +55,7 @@ public class StartIdCenter {
 
         //new MqttServer().bind(1883);
         //ID生成器内部MQTT结束
-        RandomAccessFile memoryMappedFile = new RandomAccessFile(System.currentTimeMillis()+"", "rw");
+        RandomAccessFile memoryMappedFile = new RandomAccessFile(Constant.LOG_FILE_PATH+System.currentTimeMillis()+"", "rw");
         logger.info("----开始连接zookeeper--");
         ZkClient zkc = new ZkClient(new ZkConnection(zkServers), 20000 ,new CustomSerializer());
         Id.saveSession(Constant.ID_SESSION,new IdCenter(Integer.parseInt(workId),Integer.parseInt(datacenterId),0));

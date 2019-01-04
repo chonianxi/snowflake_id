@@ -174,6 +174,11 @@ java -jar -Xmx4096m -Xms4096m -Xmn2g  id-center-1.0.0.jar 127.0.0.1:2181 1 1 -->
         <resources>
             <resource>
                 <directory>src/main/java</directory>
+                <excludes>
+                    <exclude>
+
+                    </exclude>
+                </excludes>
                 <includes>
                     <include>**/*.properties</include>
                     <include>**/*.xml</include>
