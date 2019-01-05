@@ -34,17 +34,25 @@ public class HttpServerProcess extends ChannelInboundHandlerAdapter {
             if (defaultHttpRequest.getDecoderResult().toString().toUpperCase().equals(Constant.HTTP_SUCESS)
             ){
                 if(defaultHttpRequest.getUri().equals(Constant.HTTP_GETID)){//生成ID
-                    String id = String.valueOf(Id.getSession(Constant.ID_SESSION).nextId());
+                    String id = String.valueOf(Id.getInstance().getSession(Constant.ID_SESSION).nextId());
 
-                    RandomAccessFile memoryMappedFile = Id.getFileSession(Constant.FEIL_SESSION);
-                    MappedByteBuffer out = memoryMappedFile.getChannel().map(FileChannel.MapMode.READ_WRITE, 0, Constant.count);
+                    /*RandomAccessFile memoryMappedFile = Id.getInstance().getFileSession(Constant.FEIL_SESSION);
+                    MappedByteBuffer out = memoryMappedFile.getChannel().map(FileChannel.MapMode.READ_WRITE, 0, Constant.count);*/
+
+                    FileChannel memoryMappedFile = Id.getInstance().getFileChannelSession(Constant.FEIL_SESSION);
+                    MappedByteBuffer out = memoryMappedFile.map(FileChannel.MapMode.READ_WRITE, Id.getInstance().counterAdd(), Constant.count);
                     try{
                         out.put(id.getBytes());
                         out.put((byte) '\r');
                         out.put((byte) '\n');
                     }catch(BufferOverflowException e){
-                        memoryMappedFile = new RandomAccessFile(Constant.LOG_FILE_PATH + System.currentTimeMillis()+"", "rw");
-                        out = memoryMappedFile.getChannel().map(FileChannel.MapMode.READ_WRITE, 0, Constant.count);
+                        /*RandomAccessFile memoryMappedFile = new RandomAccessFile(Constant.LOG_FILE_PATH + System.currentTimeMillis()+"", "rw");
+                        out = memoryMappedFile.getChannel().map(FileChannel.MapMode.READ_WRITE, 0, Constant.count);*/
+
+                        RandomAccessFile mappedFile = new RandomAccessFile(Constant.LOG_FILE_PATH + System.currentTimeMillis()+"", "rw");
+                        out = mappedFile.getChannel().map(FileChannel.MapMode.READ_WRITE, Id.getInstance().initCounter(), Constant.count);
+                        Id.getInstance().saveFileChannelSession(Constant.FEIL_SESSION,mappedFile.getChannel());
+
                         out.put(id.getBytes());
                         out.put((byte) '\r');
                         out.put((byte) '\n');

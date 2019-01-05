@@ -17,12 +17,12 @@ public class IdCenter {
     public IdCenter(long workerId, long datacenterId, long sequence){
         // sanity check for workerId
         if (workerId > maxWorkerId || workerId < 0) {
-            throw new IllegalArgumentException(String.format("worker Id can't be greater than %d or less than 0",maxWorkerId));
+            throw new IllegalArgumentException(String.format("ID生成器不能小于0或者大于%d",maxWorkerId));
         }
         if (datacenterId > maxDatacenterId || datacenterId < 0) {
-            throw new IllegalArgumentException(String.format("datacenter Id can't be greater than %d or less than 0",maxDatacenterId));
+            throw new IllegalArgumentException(String.format("数据中心ID不能小于0或者大于%d",maxDatacenterId));
         }
-        logger.info("worker starting. timestamp left shift %d, datacenter id bits %d, worker id bits %d, sequence bits %d, workerid %d",
+        logger.info("开始工作. 时间位 {}, 数据中心位 {},ID生成器位 {}, 序列化自增长位 {}, ID生成器ID： {}",
                 timestampLeftShift, datacenterIdBits, workerIdBits, sequenceBits, workerId);
 
         this.workerId = workerId;
@@ -81,8 +81,8 @@ public class IdCenter {
             }
 
 
-            logger.info("clock is moving backwards.  Rejecting requests until %d.", lastTimestamp);
-            throw new RuntimeException(String.format("Clock moved backwards.  Refusing to generate id for %d milliseconds",
+            logger.info("时间变小了，出错了.  停止服务，最后服务时间 {}.", lastTimestamp);
+            throw new RuntimeException(String.format("因时间变小了，倒退.  ID生成器停止服务 {} 毫秒 ",
                     lastTimestamp - timestamp));
         }
 

@@ -58,10 +58,8 @@ public class StartIdCenter {
         RandomAccessFile memoryMappedFile = new RandomAccessFile(Constant.LOG_FILE_PATH+System.currentTimeMillis()+"", "rw");
         logger.info("----开始连接zookeeper--");
         ZkClient zkc = new ZkClient(new ZkConnection(zkServers), 20000 ,new CustomSerializer());
-        Id.saveSession(Constant.ID_SESSION,new IdCenter(Integer.parseInt(workId),Integer.parseInt(datacenterId),0));
-        Id.saveFileSession(Constant.FEIL_SESSION,memoryMappedFile);
-
-
+        Id.getInstance().saveSession(Constant.ID_SESSION,new IdCenter(Integer.parseInt(workId),Integer.parseInt(datacenterId),0));
+        Id.getInstance().saveFileChannelSession(Constant.FEIL_SESSION,memoryMappedFile.getChannel());
 
         logger.info("----开始连接zookeeper-{}-连接成功，本机ip-{}-",zkServers,ip);
 

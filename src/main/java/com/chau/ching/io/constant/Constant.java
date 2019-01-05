@@ -2,7 +2,7 @@ package com.chau.ching.io.constant;
 
 public class Constant {
 
-    public static final int count = 200; // 40 MB41943040
+    public static final int count = 41943040; // 40 MB41943040
 
     public static final String ID_SESSION = "idcenter";
 
@@ -29,7 +29,7 @@ public class Constant {
     public static final String HTTP_TEXT = "text/plain";
 
 
-    public static final String LOG_FILE_PATH = "log_slave/";
+    public static final String LOG_FILE_PATH = "";//log_slave/
 
 
 
