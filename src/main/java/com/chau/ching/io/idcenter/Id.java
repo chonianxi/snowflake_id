@@ -26,13 +26,14 @@ public class Id {
         return id;
     }
 
-    private static volatile  Map<String, IdCenter>  sessionRepository = new ConcurrentHashMap<>();
+    private static  Map<String, IdCenter>  sessionRepository = new ConcurrentHashMap<>();
 
-    private static volatile Map<String, RandomAccessFile> sessionFileRepository = new ConcurrentHashMap<>();
+    private static Map<String, RandomAccessFile> sessionFileRepository = new ConcurrentHashMap<>();
 
-    public static volatile Map<String, FileChannel> sessionFileChannelRepository = new ConcurrentHashMap<>();
+    public static Map<String, FileChannel> sessionFileChannelRepository = new ConcurrentHashMap<>();
 
-    public static volatile Long counter = -19L;
+    //public static Long counter = -19L;
+    public static Long counter = -19L;
 
     public static Long counterAdd(){
         counter = counter+19;

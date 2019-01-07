@@ -2,6 +2,7 @@ package com.chau.ching.io.http;
 
 import com.chau.ching.io.constant.Constant;
 import com.chau.ching.io.idcenter.Id;
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -40,7 +41,9 @@ public class HttpServerProcess extends ChannelInboundHandlerAdapter {
                     MappedByteBuffer out = memoryMappedFile.getChannel().map(FileChannel.MapMode.READ_WRITE, 0, Constant.count);*/
 
                     FileChannel memoryMappedFile = Id.getInstance().getFileChannelSession(Constant.FEIL_SESSION);
-                    MappedByteBuffer out = memoryMappedFile.map(FileChannel.MapMode.READ_WRITE, Id.getInstance().counterAdd(), Constant.count);
+
+                    //MappedByteBuffer out = memoryMappedFile.map(FileChannel.MapMode.READ_WRITE, Id.getInstance().counterAdd(), Constant.count);
+                    MappedByteBuffer out = memoryMappedFile.map(FileChannel.MapMode.READ_WRITE, 0, Constant.count);
                     try{
                         out.put(id.getBytes());
                         out.put((byte) '\r');
@@ -50,7 +53,8 @@ public class HttpServerProcess extends ChannelInboundHandlerAdapter {
                         out = memoryMappedFile.getChannel().map(FileChannel.MapMode.READ_WRITE, 0, Constant.count);*/
 
                         RandomAccessFile mappedFile = new RandomAccessFile(Constant.LOG_FILE_PATH + System.currentTimeMillis()+"", "rw");
-                        out = mappedFile.getChannel().map(FileChannel.MapMode.READ_WRITE, Id.getInstance().initCounter(), Constant.count);
+                        //out = mappedFile.getChannel().map(FileChannel.MapMode.READ_WRITE, Id.getInstance().initCounter(), Constant.count);
+                        out = mappedFile.getChannel().map(FileChannel.MapMode.READ_WRITE, 0, Constant.count);
                         Id.getInstance().saveFileChannelSession(Constant.FEIL_SESSION,mappedFile.getChannel());
 
                         out.put(id.getBytes());
@@ -87,6 +91,7 @@ public class HttpServerProcess extends ChannelInboundHandlerAdapter {
                     response.headers().set(CONNECTION, HttpHeaderValues.KEEP_ALIVE);
                     ctx.write(response);
                     ctx.flush();
+
                 }
 
             }
@@ -96,6 +101,10 @@ public class HttpServerProcess extends ChannelInboundHandlerAdapter {
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
         ctx.flush();
+        ByteBuf buf = ctx.alloc().directBuffer();
+        boolean destroyed = buf.release();
+        assert destroyed;
+        assert buf.refCnt() == 0;
     }
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
