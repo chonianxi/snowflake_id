@@ -12,7 +12,7 @@ public class Id {
 
 
 
-    public Id(){}
+    private Id(){}
 
 
     public static Id getInstance(){
