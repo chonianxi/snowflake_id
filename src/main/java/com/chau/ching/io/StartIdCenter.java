@@ -5,6 +5,7 @@ import com.chau.ching.io.http.HttpServer;
 import com.chau.ching.io.idcenter.CustomSerializer;
 import com.chau.ching.io.idcenter.Id;
 import com.chau.ching.io.idcenter.IdCenter;
+import com.chau.ching.io.thread.ThreadCommandInvoke;
 import com.chau.ching.io.util.TaskToZk;
 import com.chau.ching.io.zookeeper.ZookeeperValidate;
 import org.I0Itec.zkclient.ZkClient;
@@ -58,8 +59,10 @@ public class StartIdCenter {
         RandomAccessFile memoryMappedFile = new RandomAccessFile(Constant.LOG_FILE_PATH+System.currentTimeMillis()+"", "rw");
         logger.info("----开始连接zookeeper--");
         ZkClient zkc = new ZkClient(new ZkConnection(zkServers), 20000 ,new CustomSerializer());
-        Id.getInstance().saveSession(Constant.ID_SESSION,new IdCenter(Integer.parseInt(workId),Integer.parseInt(datacenterId),0));
-        Id.getInstance().saveFileChannelSession(Constant.FEIL_SESSION,memoryMappedFile.getChannel());
+        Id.saveSession(Constant.ID_SESSION,new IdCenter(Integer.parseInt(workId),Integer.parseInt(datacenterId),0));
+        Id.saveFileSession(Constant.FEIL_SESSION,memoryMappedFile);
+
+
 
         logger.info("----开始连接zookeeper-{}-连接成功，本机ip-{}-",zkServers,ip);
 

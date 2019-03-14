@@ -2,56 +2,22 @@ package com.chau.ching.io.idcenter;
 
 
 import java.io.RandomAccessFile;
-import java.nio.channels.FileChannel;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class Id {
 
-    private static Id id;
+    private static final AtomicLong atomicLong = new AtomicLong(0);
 
+    private static final Map<String, IdCenter> sessionRepository = new ConcurrentHashMap<>();
 
+    private static final Map<String, RandomAccessFile> sessionFileRepository = new ConcurrentHashMap<>();
 
-    private Id(){}
-
-
-    public static Id getInstance(){
-        if (null==id){
-            synchronized (Id.class){
-                if (null==id){
-                    id = new Id();
-                }
-            }
-        }
-        return id;
-    }
-
-    private static  Map<String, IdCenter>  sessionRepository = new ConcurrentHashMap<>();
-
-    private static Map<String, RandomAccessFile> sessionFileRepository = new ConcurrentHashMap<>();
-
-    public static Map<String, FileChannel> sessionFileChannelRepository = new ConcurrentHashMap<>();
-
-    //public static Long counter = -19L;
-    public static Long counter = -19L;
-
-    public static Long counterAdd(){
-        counter = counter+19;
-        return counter;
-    }
-
-    public static Long initCounter(){
-        counter = 0L;
-        return counter;
-    }
-
-    public static void saveFileChannelSession(String clientId, FileChannel session) {
-        sessionFileChannelRepository.put(clientId, session);
-    }
-
-    public static FileChannel getFileChannelSession(String clientId) {
-
-        return sessionFileChannelRepository.get(clientId);
+    public static long getInsertPosint(){
+        //atomicLong = ;
+        return atomicLong.addAndGet(19);
     }
 
     public static void saveSession(String clientId, IdCenter session) {

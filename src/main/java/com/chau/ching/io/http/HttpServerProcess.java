@@ -2,7 +2,8 @@ package com.chau.ching.io.http;
 
 import com.chau.ching.io.constant.Constant;
 import com.chau.ching.io.idcenter.Id;
-import io.netty.buffer.ByteBuf;
+import com.chau.ching.io.thread.ThreadCommandInvoke;
+import com.chau.ching.io.thread.ThreadModel;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -16,6 +17,7 @@ import java.io.RandomAccessFile;
 import java.nio.BufferOverflowException;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static io.netty.handler.codec.http.HttpHeaderNames.CONNECTION;
 import static io.netty.handler.codec.http.HttpHeaderNames.CONTENT_LENGTH;
@@ -32,36 +34,11 @@ public class HttpServerProcess extends ChannelInboundHandlerAdapter {
             throws Exception {
         if(msg instanceof  DefaultHttpRequest){
             DefaultHttpRequest defaultHttpRequest = (DefaultHttpRequest)msg;
-            if (defaultHttpRequest.getDecoderResult().toString().toUpperCase().equals(Constant.HTTP_SUCESS)
-            ){
+            if (defaultHttpRequest.getDecoderResult().toString().toUpperCase().equals(Constant.HTTP_SUCESS)){
                 if(defaultHttpRequest.getUri().equals(Constant.HTTP_GETID)){//生成ID
-                    String id = String.valueOf(Id.getInstance().getSession(Constant.ID_SESSION).nextId());
-
-                    /*RandomAccessFile memoryMappedFile = Id.getInstance().getFileSession(Constant.FEIL_SESSION);
-                    MappedByteBuffer out = memoryMappedFile.getChannel().map(FileChannel.MapMode.READ_WRITE, 0, Constant.count);*/
-
-                    FileChannel memoryMappedFile = Id.getInstance().getFileChannelSession(Constant.FEIL_SESSION);
-
-                    //MappedByteBuffer out = memoryMappedFile.map(FileChannel.MapMode.READ_WRITE, Id.getInstance().counterAdd(), Constant.count);
-                    MappedByteBuffer out = memoryMappedFile.map(FileChannel.MapMode.READ_WRITE, 0, Constant.count);
-                    try{
-                        out.put(id.getBytes());
-                        out.put((byte) '\r');
-                        out.put((byte) '\n');
-                    }catch(BufferOverflowException e){
-                        /*RandomAccessFile memoryMappedFile = new RandomAccessFile(Constant.LOG_FILE_PATH + System.currentTimeMillis()+"", "rw");
-                        out = memoryMappedFile.getChannel().map(FileChannel.MapMode.READ_WRITE, 0, Constant.count);*/
-
-                        RandomAccessFile mappedFile = new RandomAccessFile(Constant.LOG_FILE_PATH + System.currentTimeMillis()+"", "rw");
-                        //out = mappedFile.getChannel().map(FileChannel.MapMode.READ_WRITE, Id.getInstance().initCounter(), Constant.count);
-                        out = mappedFile.getChannel().map(FileChannel.MapMode.READ_WRITE, 0, Constant.count);
-                        Id.getInstance().saveFileChannelSession(Constant.FEIL_SESSION,mappedFile.getChannel());
-
-                        out.put(id.getBytes());
-                        out.put((byte) '\r');
-                        out.put((byte) '\n');
-                    }
-
+                    String id = String.valueOf(Id.getSession(Constant.ID_SESSION).nextId());
+                    ThreadModel threadModel = new ThreadModel(id);
+                    ThreadCommandInvoke.getInstance().execute(threadModel);
                     FullHttpResponse response = new DefaultFullHttpResponse(
                             HTTP_1_1, OK, Unpooled.wrappedBuffer(id
                             .getBytes()));
@@ -91,7 +68,6 @@ public class HttpServerProcess extends ChannelInboundHandlerAdapter {
                     response.headers().set(CONNECTION, HttpHeaderValues.KEEP_ALIVE);
                     ctx.write(response);
                     ctx.flush();
-
                 }
 
             }
@@ -101,10 +77,6 @@ public class HttpServerProcess extends ChannelInboundHandlerAdapter {
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
         ctx.flush();
-        ByteBuf buf = ctx.alloc().directBuffer();
-        boolean destroyed = buf.release();
-        assert destroyed;
-        assert buf.refCnt() == 0;
     }
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
