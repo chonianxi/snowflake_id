@@ -37,8 +37,8 @@ public class HttpServerProcess extends ChannelInboundHandlerAdapter {
             if (defaultHttpRequest.getDecoderResult().toString().toUpperCase().equals(Constant.HTTP_SUCESS)){
                 if(defaultHttpRequest.getUri().equals(Constant.HTTP_GETID)){//生成ID
                     String id = String.valueOf(Id.getSession(Constant.ID_SESSION).nextId());
-                    ThreadModel threadModel = new ThreadModel(id);
-                    ThreadCommandInvoke.getInstance().execute(threadModel);
+                    //ThreadModel threadModel = new ThreadModel(id);
+                    ThreadCommandInvoke.getInstance().execute(id);
                     FullHttpResponse response = new DefaultFullHttpResponse(
                             HTTP_1_1, OK, Unpooled.wrappedBuffer(id
                             .getBytes()));

@@ -11,14 +11,14 @@ public class ThreadCommandInvoke<Task extends Runnable> implements ThreadCommand
     private static ThreadCommandInvoke instance = null;
 
     //任务队列
-    public volatile static  LinkedBlockingQueue<Runnable> taskBlockingQueue = new LinkedBlockingQueue<Runnable>(819200);
+    public volatile static  LinkedBlockingQueue<String> taskBlockingQueue = new LinkedBlockingQueue<String>(819200);
 
     //线程名称
     private static AtomicInteger threadNameNum = new AtomicInteger();
     //最少线程
     private static final int  minThreadNum = 2;
     //最大线程
-    private static final int maxThreadNum = Runtime.getRuntime().availableProcessors()>2?Runtime.getRuntime().availableProcessors():2;
+    private static final int maxThreadNum = Runtime.getRuntime().availableProcessors()>2?Runtime.getRuntime().availableProcessors()*2:2;
     //当前工作的线程数量
     private static int workThreadNum = minThreadNum;
     //当前运行的线程
@@ -29,7 +29,7 @@ public class ThreadCommandInvoke<Task extends Runnable> implements ThreadCommand
         if (null==instance){
             synchronized (ThreadCommandInvoke.class){
                 if (null==instance){
-                    instance = new ThreadCommandInvoke(Runtime.getRuntime().availableProcessors());
+                    instance = new ThreadCommandInvoke(Runtime.getRuntime().availableProcessors()*2);
                 }
             }
         }
@@ -55,6 +55,11 @@ public class ThreadCommandInvoke<Task extends Runnable> implements ThreadCommand
             TaskThread<Task> taskThread = new TaskThread<Task>();
             Thread thread = new Thread(taskThread,"snowflake-thread-" + threadNameNum.incrementAndGet());
             thread.start();
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             workThread.addFirst(taskThread);
         }
     }
@@ -64,9 +69,9 @@ public class ThreadCommandInvoke<Task extends Runnable> implements ThreadCommand
 
 
     @Override
-    public void execute(Task task) {
+    public void execute(String id) {
         try {
-            taskBlockingQueue.offer(task,3000, TimeUnit.MICROSECONDS);
+            taskBlockingQueue.offer(id,3000, TimeUnit.MICROSECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
             Thread.currentThread().interrupt();
